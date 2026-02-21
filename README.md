@@ -25,16 +25,21 @@
 ---
 
 ## 🧠 Model Architecture
-* **3D Module (`/3D_model`)**: Advanced 3D CNN utilizing a HybridModelV5 architecture with Attention mechanisms and BiLSTM for volumetric feature extraction.
-* **2D Module (`/2D_model`)**: Optimized CNN-BiLSTM-Attention architecture utilizing CLAHE-preprocessed 2D slices for multi-class impairment detection.
+We implemented a professional-grade hybrid deep learning approach for both 3D and 2D MRI analysis:
+* **Hybrid CNN + BiLSTM + Attention**: 
+  - **Feature Extraction**: Convolutional Neural Networks (3D CNN for volumes, EfficientNet-B0 for 2D slices) extract complex spatial features.
+  - **Sequential Processing**: Bidirectional Long Short-Term Memory (BiLSTM) units capture sequential or volumetric patterns across slices/voxels.
+  - **Global Context**: An Attention mechanism identifies and weighs critical regions in the brain (e.g., hippocampus, cortex) for final classification.
+* **Framework**: PyTorch
+* **Algorithm**: 3D/2D CNN-BiLSTM Hybrid Architecture
 
 ---
 
 ## 📈 Results
-| Model | Accuracy | F1-Score |
-| :--- | :--- | :--- |
-| **3D Model** | 77.63% | 0.76 |
-| **2D Model** | 58.00% | 0.54 |
+| Model | Architecture | Accuracy | F1-Score |
+| :--- | :--- | :--- | :--- |
+| **3D Model** | CNN + BiLSTM + Attention | 77.63% | 0.76 |
+| **2D Model** | CNN + BiLSTM + Attention | 58.00% | 0.54 |
 
 ---
 
