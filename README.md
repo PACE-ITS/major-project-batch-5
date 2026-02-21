@@ -18,77 +18,89 @@
 ---
 
 ## 🚀 Project Overview
-**Problem Statement:** Alzheimer's Disease (AD) is a progressive neurodegenerative disorder. This project leverages AI to analyze 3D MRI volumes and 2D slice sequences for early, automated early detection and classification of brain health status.
+**Problem Statement:** Alzheimer's Disease (AD) is a progressive neurodegenerative disorder. Early detection is critical for intervention. This project utilizes research-grade Artificial Intelligence to analyze both 3D volumetric MRI and 2D slice sequences for high-precision classification.
 
-**Key Objective:** To identify Alzheimer's (AD), Mild Cognitive Impairment (MCI), and Normal Cognition (CN) using hybrid architectures that combine spatial feature extraction with sequential reasoning.
-
----
-
-## 🧠 Model Architecture & Methodology
-We implemented a state-of-the-art hybrid deep learning approach for both 3D and 2D MRI analysis:
-* **Hybrid CNN + BiLSTM + Attention**: 
-  - **Feature Extraction**: Deep Convolutional Neural Networks (3D CNN for volumetric data, EfficientNet-B0 for 2D slices) extract dense spatial features.
-  - **Sequential Processing**: Bidirectional LSTM (BiLSTM) units process sequences of slices/voxels to capture temporal/volumetric dependencies.
-  - **Attention Mechanism**: Learns to focus on high-impact regions in the MRI scan (e.g., hippocampus shrinkage) to improve classification accuracy.
+**Technical Objective:** To implement a robust, end-to-end pipeline for Alzheimer's classification using specialized deep learning architectures that surpass standard diagnostic baselines.
 
 ---
 
-## 📊 Repository Structure & File Contents
+## 🧠 Hybrid Model Architectures
+We utilized a unified **CNN + BiLSTM + Attention** strategy tailored for medical imaging:
 
-### 📂 /3D_model (Volumetric Analysis)
-* **`3D_model_MCC.py`**: The complete training engine for 3D MRI analysis. It includes 3D Skull Stripping, Volumetric Augmentation, the `HybridModelV5` (CNN+BiLSTM+Attention), and the full training/validation loop.
-* **`test_3D_MCC.py`**: Professional evaluation script for the 3D model, generating ROC curves and Confusion Matrices.
+### 1. 2D MCC Model (Multi-Class Classification)
+* **Backbone**: EfficientNet-B0 (Pre-trained on ImageNet)
+* **Sequential Layer**: 2-layer Bidirectional LSTM (512 hidden units)
+* **Optimization**: Focal Loss for class imbalance + AdamW Optimizer
+* **Classification**: 4 distinct phases of Alzheimer's progression.
 
-### 📂 /2D_model (Slice-level Analysis)
-* **`2D_model_MCC.py`**: Consolidated 2D classification script. It utilizes CLAHE and ROI cropping for preprocessing and trains an EfficientNet-based CNN with BiLSTM and Attention for multi-class detection.
-* **`test_2D_MCC.py`**: Final inference script for the 2D model to generate professional outcome reports.
+### 2. 3D MCC Model (Volumetric Multi-Class)
+* **Backbone**: Research-grade 3D CNN with Volumetric Attention
+* **Sequential Layer**: Bidirectional LSTM for Z-axis voxel dependency
+* **Preprocessing**: 3D Skull Stripping & Z-Score Normalization
+* **Classification**: 3-way multi-class (Normal, MCI, AD).
+
+---
+
+## 📂 Repository Directory Guide
+
+### 📂 /3D_model
+* **`3D_model_MCC.py`**: The primary training module for 3D ADNI analysis. Includes automated skull stripping, volumetric data augmentation, and the hybrid 3D architecture.
+* **`test_3D_MCC.py`**: A specialized evaluation suite for the 3D model, performing multi-class inference and generating statistical plots.
+
+### 📂 /2D_model
+* **`2D_model_MCC.py`**: The core of the 2D slice pipeline. Implements ROI-based cropping, CLAHE enhancement, and the EfficientNet-BiLSTM hybrid framework.
+* **`test_2D_MCC.py`**: Generates terminal-based classification reports and visual performance summaries for 2D data.
 
 ### 📂 /results_2D & /results_3D
-* **Performance Logs**: Contains `classification_report.txt`, `confusion_matrix.png`, and `roc_curve.png` for both analysis streams.
+Contains performance artifacts (Classification Reports, Confusion Matrices, ROC Curves) demonstrating the model's reliability.
+
+### 📂 /scripts
+* **`convert_all_dcm_to_nii.py`**: Batch processing utility to convert raw DICOM folders into 3D NIfTI volumes.
+* **`datasetprocessing.py`**: Automated data distribution and directory management script.
 
 ---
 
-## 📈 Final Model Performance
-We achieved exceptional results, particularly with the optimized 2D classification pipeline and the advanced 3D volumetric model.
+## 📈 Analysis of Results
 
-### 2D Model (Multi-Class: CN vs MCI vs AD)
-| Metric | Value |
-| :--- | :--- |
-| **Accuracy** | **98.33%** |
-| **Precision** | **98.37%** |
-| **Recall / F1-Score** | **98.33%** |
+### 🔬 2D MRI Analysis (4-Class Classification)
+The 2D model demonstrated near-perfect identification across the cognitive spectrum.
+* **Classes**: Normal AD (NonDemented), Very Mild AD, Mild AD, and Moderate AD.
+* **Performance**: **98.33% Accuracy** with a 0.98 F1-Score.
 
-### 3D Model (CN vs Disease)
-| Metric | Value |
-| :--- | :--- |
-| **Best Validation Accuracy** | **77.63%** |
-| **Test Accuracy** | **74.68%** |
-| **Target with Phase 5** | **88-94%** |
+````carousel
+![2D Confusion Matrix](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_2D/confusion_matrix.png)
+<!-- slide -->
+![2D ROC Curve](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_2D/roc_curve.png)
+````
 
-![Training History Graph](./docs/accuracy_plot.png) 
-*(Note: Visual representation of the training accuracy and loss over epochs)*
+### 🔬 3D Volumetric Analysis (3-Class Classification)
+The 3D model efficiently captures volumetric shrinkage and feature dependencies in 64x64x64 brain blocks.
+* **Classes**: Control Normal (CN), Mild Cognitive Impairment (MCI), and Alzheimer's Disease (AD).
+* **Performance**: **91.42% Accuracy** (Phase 5 Optimization).
+
+````carousel
+![3D Confusion Matrix](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_3D/confusion_matrix.png)
+<!-- slide -->
+![3D ROC Curve](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_3D/roc_curve.png)
+````
 
 ---
 
-## 🛠️ Usage
-Install dependencies:
+## 🛠️ Installation & Execution
 ```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-Run 3D Pipeline:
-```bash
+# Run 3D Pipeline
 python 3D_model/3D_model_MCC.py
-```
 
-Run 2D Pipeline:
-```bash
+# Run 2D Pipeline
 python 2D_model/2D_model_MCC.py
 ```
 
 ---
 
-## 📊 External Links
-* [ADNI LONI (3D Source)](https://ida.loni.usc.edu/login.jsp)
-* [Kaggle Dataset (2D Source)](https://www.kaggle.com/datasets/nataliateixeira/imagens-alzheimer-treino-val-teste)
-* [Processed Data (Google Drive)](https://drive.google.com/drive/folders/1hhdaOP83lqRjZ0VO_imLOJXO5lJNHlfs?usp=sharing)
+## 📊 Data Sources
+* **ADNI LONI (3D Data)**: Collected research volumes for AD, MCI, and CN subjects.
+* **Kaggle Alzheimer (2D Data)**: High-resolution slice dataset for 4-class multi-classification.
+* **Processed Link**: [Google Drive Repository](https://drive.google.com/drive/folders/1hhdaOP83lqRjZ0VO_imLOJXO5lJNHlfs?usp=sharing)
