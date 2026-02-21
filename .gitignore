@@ -1,0 +1,23 @@
+# Strict Exclusions
+data/
+weights/
+checkpoints/
+*.pth
+*.nii*
+*.zip
+*.log
+__pycache__/
+.venv/
+results_phase5/
+AD_2DMCC/
+results_2D/outcome/
+
+# Keep professional modules
+!3D_model/
+!2D_model/
+!docs/
+!results_2D/
+!results_3D/
+!README.md
+!requirements.txt
+!.gitignore
