@@ -1,0 +1,15 @@
+Weighted Precision: 0.5163
+Weighted Recall: 0.5781
+Weighted F1-Score: 0.5404
+
+Detailed Report:
+                  precision    recall  f1-score   support
+
+     NonDemented       0.73      0.71      0.72       480
+VeryMildDemented       0.44      0.64      0.52       336
+    MildDemented       0.00      0.00      0.00       135
+ModerateDemented       0.00      0.00      0.00         9
+
+        accuracy                           0.58       960
+       macro avg       0.29      0.34      0.31       960
+    weighted avg       0.52      0.58      0.54       960

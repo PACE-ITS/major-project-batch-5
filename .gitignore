@@ -1,0 +1,22 @@
+# Data & Weights
+data/
+*.pth
+*.zip
+*.nii.gz
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Results (Internal/Old)
+results_phase5/
+subject_label_mapping.json
+training_log.txt
+*.log
+
+# Keep organized results
+!results_2D/
+!results_3D/
+!docs/
