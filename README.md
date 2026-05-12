@@ -2,11 +2,12 @@
 
 **Batch ID:** Batch-5  
 **Course:** Undergrad Major Project 2026  
-**Institution:** PACE Institute of Technology and Sciences
+**Institution:** PACE Institute of Technology and Sciences, Ongole, Andhra Pradesh
 
 ---
 
 ## 👥 Team Members
+
 | Name | Roll Number | GitHub Handle |
 | :--- | :--- | :--- |
 | T. Priyanka Reddy | 22KQ1A6128 | @T-Priyanka-Reddy |
@@ -15,92 +16,162 @@
 | S. Chandra Sekhar | 22KQ1A6155 | @S-Chandra-Sekhar |
 | N. Raja | 22KQ1A6153 | @N-Raja |
 
+**Guide:** Dr. Yedukondalu Jammisetty, Dept. of AI & ML
+
 ---
 
 ## 🚀 Project Overview
-**Problem Statement:** Alzheimer's Disease (AD) is a progressive neurodegenerative disorder. Early detection is critical for intervention. This project utilizes research-grade Artificial Intelligence to analyze both 3D volumetric MRI and 2D slice sequences for high-precision classification.
 
-**Technical Objective:** To implement a robust, end-to-end pipeline for Alzheimer's classification using specialized deep learning architectures that surpass standard diagnostic baselines.
+**Problem Statement:** Alzheimer's Disease (AD) is a progressive neurodegenerative disorder that is the primary cause of dementia worldwide. Early detection during the Mild Cognitive Impairment (MCI) stage is critical for timely clinical intervention. Manual interpretation of volumetric MRI scans is time-consuming, expertise-dependent, and prone to inter-observer variability — making automated diagnostic systems essential.
+
+**Technical Objective:** To implement a hybrid deep learning framework combining 3D CNN, BiLSTM, and Attention mechanisms for robust subject-level Alzheimer's classification using both 3D volumetric MRI (ADNI) and 2D slice-based MRI (Kaggle) datasets. The study evaluates the trade-off between volumetric anatomical fidelity and computational efficiency.
 
 ---
 
 ## 🧠 Hybrid Model Architectures
-We utilized a unified **CNN + BiLSTM + Attention** strategy tailored for medical imaging:
 
-### 1. 2D MCC Model (Multi-Class Classification)
-* **Backbone**: EfficientNet-B0 (Pre-trained on ImageNet)
-* **Sequential Layer**: 2-layer Bidirectional LSTM (512 hidden units)
-* **Optimization**: Focal Loss for class imbalance + AdamW Optimizer
-* **Classification**: 4 distinct phases of Alzheimer's progression.
+The unified pipeline integrates **3D/2D CNN + BiLSTM + Attention** for medical imaging:
 
-### 2. 3D MCC Model (Volumetric Multi-Class)
-* **Backbone**: Research-grade 3D CNN with Volumetric Attention
-* **Sequential Layer**: Bidirectional LSTM for Z-axis voxel dependency
-* **Preprocessing**: 3D Skull Stripping & Z-Score Normalization
-* **Classification**: 3-way multi-class (Normal, MCI, AD).
+### 1. 3D CNN–BiLSTM Model (Volumetric Multi-Class)
+- **Backbone**: Stacked 3D Convolutional Neural Network layers
+- **Feature Reduction**: Global Average Pooling (GAP)
+- **Sequential Layer**: Bidirectional LSTM — captures contextual dependencies between adjacent MRI slices in both forward and backward directions
+- **Attention**: Post-BiLSTM attention mechanism for adaptive feature weighting on disease-relevant brain regions
+- **Preprocessing**: DICOM → NIfTI conversion, resampled to 128×128×128, Min-Max normalization
+- **Classifier**: Fully connected Softmax layer
+- **Classification**: 3-way (Cognitively Normal, MCI, Alzheimer's Disease)
+- **Optimizer**: AdamW (lr = 1×10⁻⁴) with cosine annealing, dropout, and early stopping
 
----
-
-## 📂 Repository Directory Guide
-
-### 📂 /3D_model
-* **`3D_model_MCC.py`**: The primary training module for 3D ADNI analysis. Includes automated skull stripping, volumetric data augmentation, and the hybrid 3D architecture.
-* **`test_3D_MCC.py`**: A specialized evaluation suite for the 3D model, performing multi-class inference and generating statistical plots.
-
-### 📂 /2D_model
-* **`2D_model_MCC.py`**: The core of the 2D slice pipeline. Implements ROI-based cropping, CLAHE enhancement, and the EfficientNet-BiLSTM hybrid framework.
-* **`test_2D_MCC.py`**: Generates terminal-based classification reports and visual performance summaries for 2D data.
-
-### 📂 /results_2D & /results_3D
-Contains performance artifacts (Classification Reports, Confusion Matrices, ROC Curves) demonstrating the model's reliability.
-
-### 📂 /scripts
-* **`convert_all_dcm_to_nii.py`**: Batch processing utility to convert raw DICOM folders into 3D NIfTI volumes.
-* **`datasetprocessing.py`**: Automated data distribution and directory management script.
-
----
-
-## 📈 Analysis of Results
-
-### 🔬 2D MRI Analysis (4-Class Classification)
-The 2D model demonstrated near-perfect identification across the cognitive spectrum.
-* **Classes**: Normal AD (NonDemented), Very Mild AD, Mild AD, and Moderate AD.
-* **Performance**: **98.33% Accuracy** with a 0.98 F1-Score.
-
-````carousel
-![2D Confusion Matrix](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_2D/confusion_matrix.png)
-<!-- slide -->
-![2D ROC Curve](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_2D/roc_curve.png)
-````
-
-### 🔬 3D Volumetric Analysis (3-Class Classification)
-The 3D model efficiently captures volumetric shrinkage and feature dependencies in 64x64x64 brain blocks.
-* **Classes**: Control Normal (CN), Mild Cognitive Impairment (MCI), and Alzheimer's Disease (AD).
-* **Performance**: **91.42% Accuracy** (Phase 5 Optimization).
-
-````carousel
-![3D Confusion Matrix](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_3D/confusion_matrix.png)
-<!-- slide -->
-![3D ROC Curve](file:///c:/Users/HP/OneDrive/Desktop/ADPM3D/results_3D/roc_curve.png)
-````
-
----
-
-## 🛠️ Installation & Execution
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run 3D Pipeline
-python 3D_model/3D_model_MCC.py
-
-# Run 2D Pipeline
-python 2D_model/2D_model_MCC.py
-```
+### 2. 2D CNN–BiLSTM Model (Slice-Based Multi-Class)
+- **Backbone**: EfficientNet-B0 (pretrained on ImageNet, compound scaling)
+- **Sequential Layer**: Bidirectional LSTM for inter-slice contextual learning
+- **Attention**: Attention layer for discriminative feature refinement
+- **Preprocessing**: Resized to 128×128, Z-score normalization, augmentation (rotation, flipping, brightness)
+- **Classifier**: Fully connected Softmax layer
+- **Classification**: 4-way (NonDemented, VeryMildDemented, MildDemented, ModerateDemented)
+- **Loss Function**: Focal Loss for class imbalance + AdamW Optimizer
 
 ---
 
 ## 📊 Data Sources
-* **ADNI LONI (3D Data)**: Collected research volumes for AD, MCI, and CN subjects.
-* **Kaggle Alzheimer (2D Data)**: High-resolution slice dataset for 4-class multi-classification.
-* **Processed Link**: [Google Drive Repository](https://drive.google.com/drive/folders/1hhdaOP83lqRjZ0VO_imLOJXO5lJNHlfs?usp=sharing)
+
+### 3D Dataset — ADNI (Alzheimer's Disease Neuroimaging Initiative)
+T1-weighted MRI scans (MPRAGE protocol) from the [ADNI IDA portal](https://ida.loni.usc.edu/login.jsp). Subject-wise split: 70% train / 15% validation / 15% test.
+
+| Class | Subjects | Samples |
+| :--- | :---: | :---: |
+| Cognitively Normal (CN) | 55 | 304 |
+| Mild Cognitive Impairment (MCI) | 55 | 370 |
+| Alzheimer's Disease (AD) | 55 | 243 |
+| **Total** | **165** | **917** |
+
+### 2D Dataset — Kaggle Alzheimer MRI
+6400 MRI slices across 4 dementia stages.
+
+| Class | Images |
+| :--- | :---: |
+| NonDemented | 2240 |
+| VeryMildDemented | 1568 |
+| MildDemented | 627 |
+| ModerateDemented | 45 |
+| **Total** | **6400** |
+
+**Processed Data:** [Google Drive Repository](https://drive.google.com/drive/folders/1hhdaOP83lqRjZ0VO_imLOJXO5lJNHlfs?usp=sharing)
+
+---
+
+## 📈 Results
+
+### 🔬 3D Volumetric Analysis (3-Class)
+
+| Model | Accuracy (%) | Precision | Recall | F1-Score |
+| :--- | :---: | :---: | :---: | :---: |
+| **3D CNN + BiLSTM (Proposed)** | **91.43** | **0.92** | **0.91** | **0.92** |
+| Multi-View CNN + LSTM | 86.96 | 0.8619 | 0.8555 | 0.8661 |
+| 3D CNN + LSTM | 82.16 | 0.8974 | 0.8120 | 0.8688 |
+
+### 🔬 2D Slice-Based Analysis (4-Class)
+
+| Model | Accuracy (%) | Precision | Recall | F1-Score |
+| :--- | :---: | :---: | :---: | :---: |
+| **EfficientNet + BiLSTM (Proposed)** | **98.33** | **0.9837** | **0.9833** | **0.9833** |
+| CNN + LSTM | 83.00 | 0.87 | 0.80 | 0.85 |
+
+### 🏆 Comparison with Existing Models (3D)
+
+| Model | Train Accuracy (%) | Test Accuracy (%) |
+| :--- | :---: | :---: |
+| **Proposed 3D CNN–BiLSTM** | **92.15** | **91.43** |
+| InceptionResNetV2 | 90.9 | 90.7 |
+| DenseNet121 | 87.5 | 86.5 |
+| MobileNetV2 | 88.4 | 87.3 |
+| Xception | 86.5 | 83.8 |
+| VGG16 | 83.5 | 84.5 |
+
+> **Key Insight:** While the 2D model achieves higher numerical accuracy, the 3D subject-level model is more anatomically faithful and clinically reliable, as real-world diagnosis is performed per patient — not per image slice.
+
+---
+
+## 📂 Repository Structure
+
+```
+ADPM3D/
+├── 3D_model/
+│   ├── 3D_model_MCC.py        # 3D training: skull stripping, volumetric augmentation, CNN–BiLSTM
+│   └── test_3D_MCC.py         # 3D evaluation: multi-class inference, statistical plots
+├── 2D_model/
+│   ├── 2D_model_MCC.py        # 2D training: ROI cropping, CLAHE, EfficientNet–BiLSTM
+│   └── test_2D_MCC.py         # 2D evaluation: classification reports, visual summaries
+├── results_2D/                # Confusion matrix, ROC curves (2D)
+├── results_3D/                # Confusion matrix, ROC curves (3D)
+├── scripts/
+│   ├── convert_all_dcm_to_nii.py  # Batch DICOM → NIfTI conversion
+│   └── datasetprocessing.py       # Dataset distribution & directory management
+└── requirements.txt
+```
+
+---
+
+## 🛠️ Installation & Execution
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run 3D Volumetric Pipeline (ADNI)
+python 3D_model/3D_model_MCC.py
+
+# Run 2D Slice-Based Pipeline (Kaggle)
+python 2D_model/2D_model_MCC.py
+
+# Convert DICOM to NIfTI (preprocessing)
+python scripts/convert_all_dcm_to_nii.py
+```
+
+---
+
+## 🔬 Methodology Summary
+
+The overall pipeline for both models:
+
+1. **MRI Preprocessing** — DICOM loading, slice ordering, 3D stacking, NIfTI export, resampling, intensity normalization
+2. **Convolutional Feature Extraction** — 3D CNN (volumetric) or EfficientNet-B0 (slice-level)
+3. **Sequential Modeling** — BiLSTM captures inter-slice contextual dependencies (forward + backward)
+4. **Attention Refinement** — Adaptive weights focus on disease-relevant regions (hippocampal atrophy, cortical thinning)
+5. **Classification** — Softmax classifier with multi-class cross-entropy loss
+
+---
+
+## 🔭 Future Work
+
+- Expand dataset with larger, more diverse ADNI cohorts for improved generalization
+- Longitudinal MRI studies to model disease stage progression (CN → MCI → AD)
+- Multi-modal fusion: PET scans, CSF biomarkers, genetic data, and clinical assessments
+- Vision Transformer and CNN-Transformer hybrid architectures for global feature learning
+- Explainable AI (Grad-CAM) for clinical interpretability and adoption
+
+---
+
+## 📄 Citation
+
+> T. Priyanka Reddy, B. Hepsiba Rani, G. Mukesh Anand, S. Chandra Sekhar, N. Raja, and J. Yedukondalu, *"Alzheimer's Disease Prediction through 3D/2D MRI Images using 3D CNN and BiLSTM,"* PACE Institute of Technology and Sciences, 2026.
